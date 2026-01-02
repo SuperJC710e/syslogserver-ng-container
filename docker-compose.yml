@@ -15,7 +15,9 @@ services:
       - TZ=UTC
     volumes:
       - ./logs:/app/logs
-    # If you need to run on non-standard ports, uncomment and modify:
+    # Customize log rotation settings:
+    # command: ["python", "syslog_viewer.py", "--max-size", "50", "--max-files", "5"]
+    # Or run on non-standard ports:
     # command: ["python", "syslog_viewer.py", "--syslog-port", "5140", "--web-port", "8080"]
 
 # volumes:
