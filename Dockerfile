@@ -1,10 +1,18 @@
 FROM python:3.11-slim
 
+# Environment variables
+ENV PIP_BREAK_SYSTEM_PACKAGES=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_NO_WARN_SCRIPT_LOCATION=1 \
+    PIP_PROGRESS_BAR=off \
+    PIP_ROOT_USER_ACTION=ignore
+
 WORKDIR /app
 
 # Copy requirements and install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy application files
 COPY syslog_viewer.py .
