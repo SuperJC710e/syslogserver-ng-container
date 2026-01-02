@@ -173,6 +173,7 @@
         
         <div class="controls">
             <input type="text" id="filter" placeholder="Filter logs...">
+            <button onclick="toggleSort()" id="sort-btn">Sort: Newest First</button>
             <button onclick="clearLogs()">Clear Display</button>
             <button onclick="toggleAutoScroll()" id="auto-scroll-btn">
                 <span class="auto-scroll-indicator" id="auto-scroll-indicator"></span>
@@ -190,6 +191,7 @@
         let autoScroll = true;
         let allLogs = [];
         let filterText = '';
+        let sortReverse = true; // true = newest first (default)
         
         function toggleAutoScroll() {
             autoScroll = !autoScroll;
@@ -200,6 +202,14 @@
             } else {
                 btn.innerHTML = '<span class="auto-scroll-indicator off"></span>Auto-scroll: OFF';
             }
+        }
+
+        function toggleSort() {
+            sortReverse = !sortReverse;
+            const btn = document.getElementById('sort-btn');
+            btn.textContent = sortReverse ? 'Sort: Newest First' : 'Sort: Oldest First';
+            const filtered = filterLogs();
+            renderLogs(filtered);
         }
         
         function clearLogs() {
@@ -216,14 +226,20 @@
         
         function renderLogs(logs) {
             const container = document.getElementById('log-container');
-            
+
             if (logs.length === 0) {
                 container.innerHTML = '<div class="no-logs">No logs match the current filter.</div>';
                 return;
             }
-            
+
+            // Sort logs based on sortReverse setting
+            const sortedLogs = [...logs];
+            if (sortReverse) {
+                sortedLogs.reverse();
+            }
+
             let html = '';
-            logs.forEach(log => {
+            sortedLogs.forEach(log => {
                 html += `
                     <div class="log-entry">
                         <span class="log-timestamp">[${escapeHtml(log.timestamp)}]</span>
@@ -232,9 +248,9 @@
                     </div>
                 `;
             });
-            
+
             container.innerHTML = html;
-            
+
             if (autoScroll) {
                 container.scrollTop = container.scrollHeight;
             }
